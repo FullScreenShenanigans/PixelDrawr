@@ -70,10 +70,10 @@ interface IThingCanvases {
     right?: IThingSubCanvas;
     bottom?: IThingSubCanvas;
     left?: IThingSubCanvas;
-    topright?: IThingSubCanvas;
-    bottomright?: IThingSubCanvas;
-    bottomleft?: IThingSubCanvas;
-    topleft?: IThingSubCanvas;
+    topRight?: IThingSubCanvas;
+    bottomRight?: IThingSubCanvas;
+    bottomLeft?: IThingSubCanvas;
+    topLeft?: IThingSubCanvas;
 }
 
 interface IThingSubCanvas {
@@ -159,9 +159,6 @@ class PixelDrawr {
 
     // The 2D canvas context associated with the background canvas.
     private backgroundContext: CanvasRenderingContext2D;
-
-    // A bound version of the drawThingOnContext variable, for loop automation.
-    private drawThingOnContextBound: (context: CanvasRenderingContext2D, thing: IThing) => void;
 
     // Arrays of Thing[]s that are to be drawn in each refill.
     private thingArrays: IThing[][];
@@ -328,7 +325,6 @@ class PixelDrawr {
     setCanvas(canvas: HTMLCanvasElement): void {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
-        this.drawThingOnContextBound = this.drawThingOnContext.bind(self, this.context);
     }
 
     /**
@@ -500,7 +496,9 @@ class PixelDrawr {
             this.drawBackground();
         }
 
-        this.thingArrays.forEach(this.refillThingArray);
+        for (var i: number = 0; i < this.thingArrays.length; i += 1) {
+            this.refillThingArray(this.thingArrays[i]);
+        }
     }
 
     /**
@@ -509,7 +507,9 @@ class PixelDrawr {
      * @param {Thing[]} array   A listing of Things to be drawn onto the canvas.
      */
     refillThingArray(array: IThing[]) {
-        array.forEach(<any>this.drawThingOnContextBound);
+        for (var i = 0; i < array.length; i += 1) {
+            this.drawThingOnContext(this.context, array[i]);
+        }
     }
 
     /**
@@ -753,23 +753,23 @@ class PixelDrawr {
                 // topLeft, left, bottomLeft
                 diffvert = sprite.topheight ? sprite.topheight * this.unitsize : spriteheightpixels;
                 diffhoriz = sprite.leftwidth ? sprite.leftwidth * this.unitsize : spritewidthpixels;
-                this.drawPatternOnCanvas(context, canvases.topleft.canvas, leftreal, topreal, widthdrawn, heightdrawn, opacity);
+                this.drawPatternOnCanvas(context, canvases.topLeft.canvas, leftreal, topreal, widthdrawn, heightdrawn, opacity);
                 this.drawPatternOnCanvas(context, canvases[this.keyLeft].canvas, leftreal, topreal + diffvert, widthdrawn, heightreal - diffvert * 2, opacity);
-                this.drawPatternOnCanvas(context, canvases.bottomleft.canvas, leftreal, bottomreal - diffvert, widthdrawn, heightdrawn, opacity);
+                this.drawPatternOnCanvas(context, canvases.bottomLeft.canvas, leftreal, bottomreal - diffvert, widthdrawn, heightdrawn, opacity);
                 leftreal += diffhoriz;
                 widthreal -= diffhoriz;
 
                 // top, topRight
                 diffhoriz = sprite.rightwidth ? sprite.rightwidth * this.unitsize : spritewidthpixels;
                 this.drawPatternOnCanvas(context, canvases[this.keyTop].canvas, leftreal, topreal, widthreal - diffhoriz, heightdrawn, opacity);
-                this.drawPatternOnCanvas(context, canvases.topright.canvas, rightreal - diffhoriz, topreal, widthdrawn, heightdrawn, opacity);
+                this.drawPatternOnCanvas(context, canvases.topRight.canvas, rightreal - diffhoriz, topreal, widthdrawn, heightdrawn, opacity);
                 topreal += diffvert;
                 heightreal -= diffvert;
 
                 // right, bottomRight, bottom
                 diffvert = sprite.bottomheight ? sprite.bottomheight * this.unitsize : spriteheightpixels;
                 this.drawPatternOnCanvas(context, canvases[this.keyRight].canvas, rightreal - diffhoriz, topreal, widthdrawn, heightreal - diffvert, opacity);
-                this.drawPatternOnCanvas(context, canvases.bottomright.canvas, rightreal - diffhoriz, bottomreal - diffvert, widthdrawn, heightdrawn, opacity);
+                this.drawPatternOnCanvas(context, canvases.bottomRight.canvas, rightreal - diffhoriz, bottomreal - diffvert, widthdrawn, heightdrawn, opacity);
                 this.drawPatternOnCanvas(context, canvases[this.keyBottom].canvas, leftreal, bottomreal - diffvert, widthreal - diffhoriz, heightdrawn, opacity);
                 rightreal -= diffhoriz;
                 widthreal -= diffhoriz;
