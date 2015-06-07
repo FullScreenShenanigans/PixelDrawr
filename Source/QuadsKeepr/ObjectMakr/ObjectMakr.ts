@@ -303,6 +303,7 @@ module ObjectMakr {
         /**
          * Proliferates all members of the donor to the recipient recursively. This
          * is therefore a deep copy.
+         * 
          * @param {Object} recipient   An object receiving the donor's members.
          * @param {Object} donor   An object whose members are copied to recipient.
          * @param {Boolean} noOverride   If recipient properties may be overriden.

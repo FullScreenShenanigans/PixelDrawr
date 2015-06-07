@@ -1,16 +1,22 @@
-/// <reference path="MapScreenr/MapScreenr.ts" />
 /// <reference path="PixelRendr/PixelRendr.ts" />
 /// <reference path="QuadsKeepr/QuadsKeepr.ts" />
 
 module PixelDrawr {
     "use strict";
 
+    export interface IScreenBoundaries {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
+
     export interface IPixelDrawrSettings {
         // The PixelRendr used for sprite lookups and generation.
         PixelRender: PixelRendr.PixelRendr;
 
-        // The MapScreenr used for screen boundary information.
-        MapScreener: MapScreenr.MapScreenr;
+        // The bounds of the screen for bounds checking (typically a MapScreenr)
+        MapScreener: IScreenBoundaries;
 
         // A Function to create a canvas of a given width an dheight.
         createCanvas: (width: number, height: number) => HTMLCanvasElement;
@@ -148,8 +154,8 @@ module PixelDrawr {
         // A PixelRendr used to obtain raw sprite data and canvases.
         private PixelRender: PixelRendr.PixelRendr;
 
-        // A MapScreenr variable that provides bounds checking.
-        private MapScreener: MapScreenr.MapScreenr;
+        // The bounds of the screen for bounds checking (typically a MapScreenr)
+        private MapScreener: IScreenBoundaries;
 
         // The canvas element each Thing is to be drawn on.
         private canvas: HTMLCanvasElement;
