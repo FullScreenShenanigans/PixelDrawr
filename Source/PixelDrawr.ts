@@ -19,7 +19,7 @@ module PixelDrawr {
      * 
      * @author "Josh Goldberg" <josh@fullscreenmario.com>
      */
-    export class PixelDrawr {
+    export class PixelDrawr implements IPixelDrawr {
         // A PixelRendr used to obtain raw sprite data and canvases.
         private PixelRender: PixelRendr.IPixelRendr;
 
@@ -573,7 +573,7 @@ module PixelDrawr {
             top: number): void {
             // If the sprite should repeat, use the pattern equivalent
             if (thing.repeat) {
-                this.drawPatternOnCanvas(context, canvas, left, top, thing.unitwidth, thing.unitheight, thing.opacity || 1);
+                this.drawPatternOnContext(context, canvas, left, top, thing.unitwidth, thing.unitheight, thing.opacity || 1);
             } else if (thing.opacity !== 1) {
                 // Opacities not equal to one must reset the context afterwards
                 context.globalAlpha = thing.opacity;
@@ -624,7 +624,7 @@ module PixelDrawr {
                     // If there's a bottom, draw that and push up bottomreal
                     if ((canvasref = <IThingSubCanvas>canvases[this.keyBottom])) {
                         diffvert = sprite.bottomheight ? sprite.bottomheight * this.unitsize : spriteheightpixels;
-                        this.drawPatternOnCanvas(
+                        this.drawPatternOnContext(
                             context,
                             canvasref.canvas,
                             leftreal,
@@ -638,7 +638,7 @@ module PixelDrawr {
                     // If there's a top, draw that and push down topreal
                     if ((canvasref = <IThingSubCanvas>canvases[this.keyTop])) {
                         diffvert = sprite.topheight ? sprite.topheight * this.unitsize : spriteheightpixels;
-                        this.drawPatternOnCanvas(context, canvasref.canvas, leftreal, topreal, widthreal, heightdrawn, opacity);
+                        this.drawPatternOnContext(context, canvasref.canvas, leftreal, topreal, widthreal, heightdrawn, opacity);
                         topreal += diffvert;
                         heightreal -= diffvert;
                     }
@@ -648,14 +648,14 @@ module PixelDrawr {
                     // If there's a left, draw that and push forward leftreal
                     if ((canvasref = canvases[this.keyLeft])) {
                         diffhoriz = sprite.leftwidth ? sprite.leftwidth * this.unitsize : spritewidthpixels;
-                        this.drawPatternOnCanvas(context, canvasref.canvas, leftreal, topreal, widthdrawn, heightreal, opacity);
+                        this.drawPatternOnContext(context, canvasref.canvas, leftreal, topreal, widthdrawn, heightreal, opacity);
                         leftreal += diffhoriz;
                         widthreal -= diffhoriz;
                     }
                     // If there's a right, draw that and push back rightreal
                     if ((canvasref = canvases[this.keyRight])) {
                         diffhoriz = sprite.rightwidth ? sprite.rightwidth * this.unitsize : spritewidthpixels;
-                        this.drawPatternOnCanvas(
+                        this.drawPatternOnContext(
                             context,
                             canvasref.canvas,
                             rightreal - diffhoriz,
@@ -673,7 +673,7 @@ module PixelDrawr {
                     // topLeft, left, bottomLeft
                     diffvert = sprite.topheight ? sprite.topheight * this.unitsize : spriteheightpixels;
                     diffhoriz = sprite.leftwidth ? sprite.leftwidth * this.unitsize : spritewidthpixels;
-                    this.drawPatternOnCanvas(
+                    this.drawPatternOnContext(
                         context,
                         canvases.topLeft.canvas,
                         leftreal,
@@ -682,7 +682,7 @@ module PixelDrawr {
                         heightdrawn,
                         opacity
                         );
-                    this.drawPatternOnCanvas(
+                    this.drawPatternOnContext(
                         context,
                         canvases[this.keyLeft].canvas,
                         leftreal,
@@ -691,7 +691,7 @@ module PixelDrawr {
                         heightreal - diffvert * 2,
                         opacity
                         );
-                    this.drawPatternOnCanvas(
+                    this.drawPatternOnContext(
                         context,
                         canvases.bottomLeft.canvas,
                         leftreal,
@@ -705,7 +705,7 @@ module PixelDrawr {
 
                     // top, topRight
                     diffhoriz = sprite.rightwidth ? sprite.rightwidth * this.unitsize : spritewidthpixels;
-                    this.drawPatternOnCanvas(
+                    this.drawPatternOnContext(
                         context,
                         canvases[this.keyTop].canvas,
                         leftreal,
@@ -714,7 +714,7 @@ module PixelDrawr {
                         heightdrawn,
                         opacity
                         );
-                    this.drawPatternOnCanvas(
+                    this.drawPatternOnContext(
                         context,
                         canvases.topRight.canvas,
                         rightreal - diffhoriz,
@@ -728,7 +728,7 @@ module PixelDrawr {
 
                     // right, bottomRight, bottom
                     diffvert = sprite.bottomheight ? sprite.bottomheight * this.unitsize : spriteheightpixels;
-                    this.drawPatternOnCanvas(
+                    this.drawPatternOnContext(
                         context,
                         canvases[this.keyRight].canvas,
                         rightreal - diffhoriz,
@@ -737,7 +737,7 @@ module PixelDrawr {
                         heightreal - diffvert,
                         opacity
                         );
-                    this.drawPatternOnCanvas(
+                    this.drawPatternOnContext(
                         context,
                         canvases.bottomRight.canvas,
                         rightreal - diffhoriz,
@@ -746,7 +746,7 @@ module PixelDrawr {
                         heightdrawn,
                         opacity
                         );
-                    this.drawPatternOnCanvas(
+                    this.drawPatternOnContext(
                         context,
                         canvases[this.keyBottom].canvas,
                         leftreal,
@@ -770,13 +770,13 @@ module PixelDrawr {
                     context.drawImage(canvasref.canvas, leftreal, topreal, widthreal, heightreal);
                     context.globalAlpha = 1;
                 } else {
-                    this.drawPatternOnCanvas(context, canvasref.canvas, leftreal, topreal, widthreal, heightreal, opacity);
+                    this.drawPatternOnContext(context, canvasref.canvas, leftreal, topreal, widthreal, heightreal, opacity);
                 }
             }
         }
 
 
-        /* Position utilities (which will almost always become very optimized)
+        /* Position utilities (which should almost always be optimized)
         */
 
         /**
@@ -848,9 +848,8 @@ module PixelDrawr {
          * @param {Number} width   How many pixels wide the drawing area should be.
          * @param {Number} left   How many pixels high the drawing area should be.
          * @param {Number} opacity   How transparent the drawing is, in [0,1].
-         * @todo Sprites should store patterns so createPattern isn't repeated.
          */
-        private drawPatternOnCanvas(
+        private drawPatternOnContext(
             context: CanvasRenderingContext2D,
             source: any,
             left: number,
