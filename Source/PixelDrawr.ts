@@ -600,8 +600,7 @@ module PixelDrawr {
             canvases: IThingCanvases,
             thing: IThing,
             left: number,
-            top: number
-            ): void {
+            top: number): void {
             var sprite: PixelRendr.ISpriteMultiple = <PixelRendr.ISpriteMultiple>thing.sprite,
                 topreal: number = top,
                 leftreal: number = left,
@@ -856,8 +855,7 @@ module PixelDrawr {
             top: number,
             width: number,
             height: number,
-            opacity: number
-            ): void {
+            opacity: number): void {
             context.globalAlpha = opacity;
             context.translate(left, top);
             context.fillStyle = context.createPattern(source, "repeat");
