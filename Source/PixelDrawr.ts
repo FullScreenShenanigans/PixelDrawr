@@ -202,7 +202,7 @@ module PixelDrawr {
          */
         setCanvas(canvas: HTMLCanvasElement): void {
             this.canvas = canvas;
-            this.context = canvas.getContext("2d");
+            this.context = <CanvasRenderingContext2D>canvas.getContext("2d");
         }
 
         /**
@@ -230,7 +230,7 @@ module PixelDrawr {
          */
         resetBackground(): void {
             this.backgroundCanvas = this.createCanvas(this.MapScreener[this.keyWidth], this.MapScreener[this.keyHeight]);
-            this.backgroundContext = this.backgroundCanvas.getContext("2d");
+            this.backgroundContext = <CanvasRenderingContext2D>this.backgroundCanvas.getContext("2d");
         }
 
         /**
@@ -335,7 +335,7 @@ module PixelDrawr {
 
                 // Make a new sprite for this individual component
                 canvas = this.createCanvas(thing.spritewidth * this.unitsize, thing.spriteheight * this.unitsize);
-                context = canvas.getContext("2d");
+                context = <CanvasRenderingContext2D>canvas.getContext("2d");
 
                 // Copy over this sprite's information the same way as refillThingCanvas
                 imageData = context.getImageData(0, 0, canvas[this.keyWidth], canvas[this.keyHeight]);
