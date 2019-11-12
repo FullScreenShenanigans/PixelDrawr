@@ -12,7 +12,7 @@
   },
   "description": "Front-end to PixelRendr to automate drawing mass amounts of sprites to a primary canvas.",
   "devDependencies": {
-    "@types/chai": "^4.1.7",
+    "@types/chai": "^4.2.5",
     "@types/lodash": "^4.14.123",
     "@types/lolex": "^3.1.1",
     "@types/mocha": "^5.2.6",
